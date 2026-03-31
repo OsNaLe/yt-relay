@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self' data: blob:;
+  script-src 'unsafe-inline';
+  frame-src https://www.youtube-nocookie.com https://www.youtube.com;
+  style-src 'unsafe-inline';
+"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
+  iframe { width: 100%; height: 100%; border: none; display: block; }
+</style>
+</head>
+<body>
+<script>
+  var params = new URLSearchParams(location.search);
+  var v = params.get('v');
+  if (v && /^[\w\-]{10,64}$/.test(v)) {
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + v
+      + '?autoplay=1&controls=0&rel=0&iv_load_policy=3&playsinline=1&disablekb=1&fs=0';
+    f.allow = 'autoplay; encrypted-media';
+    f.allowFullscreen = true;
+    document.body.appendChild(f);
+  }
+</script>
+</body>
+</html>
