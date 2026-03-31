@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self' data: blob:;
   script-src 'unsafe-inline';
-  frame-src https://www.youtube-nocookie.com https://www.youtube.com;
+  frame-src https://inv.nadeko.net https://invidious.fdn.fr https://yt.cdaut.de https://www.youtube.com;
   style-src 'unsafe-inline';
 "/>
 <style>
@@ -16,15 +16,27 @@
 </head>
 <body>
 <script>
-  var params = new URLSearchParams(location.search);
-  var v = params.get('v');
+  var v = new URLSearchParams(location.search).get('v');
   if (v && /^[\w\-]{10,64}$/.test(v)) {
-    var f = document.createElement('iframe');
-    f.src = 'https://www.youtube.com/embed/' + v
-      + '?autoplay=1&controls=1&rel=0&iv_load_policy=3&playsinline=1&origin=https%3A%2F%2Fosnale.github.io&enablejsapi=0';
-    f.allow = 'autoplay; encrypted-media';
-    f.allowFullscreen = true;
-    document.body.appendChild(f);
+    var INSTANCES = [
+      'https://inv.nadeko.net',
+      'https://invidious.fdn.fr',
+      'https://yt.cdaut.de'
+    ];
+    var idx = 0;
+    function tryNext() {
+      if (idx >= INSTANCES.length) return;
+      var f = document.createElement('iframe');
+      f.setAttribute('allow', 'autoplay; encrypted-media; fullscreen');
+      f.src = INSTANCES[idx] + '/embed/' + v + '?autoplay=1&listen=0&local=true';
+      f.onload = function() {
+        // success — remove any pending fallback
+        document.querySelectorAll('iframe:not(:last-child)').forEach(function(el){ el.remove(); });
+      };
+      document.body.appendChild(f);
+      idx++;
+    }
+    tryNext();
   }
 </script>
 </body>
